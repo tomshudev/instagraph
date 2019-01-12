@@ -1,0 +1,12 @@
+<od-virtualscroll
+  class="cells-container"
+  [vsData]="selector$"
+  [vsOptions]="options$"
+  @list
+>
+  <ng-template let-item let-row="row">
+    <div class="cell" @items>
+      <inf-user-item [user]="item" [showButtons]="true"></inf-user-item>
+    </div>
+  </ng-template>
+</od-virtualscroll>

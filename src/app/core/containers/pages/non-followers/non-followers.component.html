@@ -1,0 +1,27 @@
+<mat-selection-list #selections class="non-followers" @list>
+  <mat-list-option
+    *ngFor="let nf of (nonFollowers$ | async)"
+    [value]="nf"
+    @items
+  >
+    <inf-user-item [user]="nf"></inf-user-item>
+  </mat-list-option>
+</mat-selection-list>
+
+<div class="buttons">
+  <button
+    class="buttons__button"
+    mat-stroked-button
+    (click)="unfollow(selections.selectedOptions.selected)"
+  >
+    Unfollow {{ selections.selectedOptions.selected.length }} users
+  </button>
+
+  <button
+    class="buttons__button"
+    mat-stroked-button
+    (click)="whiteList(selections.selectedOptions.selected)"
+  >
+    Add {{ selections.selectedOptions.selected.length }} to white list
+  </button>
+</div>

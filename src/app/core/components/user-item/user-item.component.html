@@ -1,0 +1,11 @@
+<div class="user">
+  <div class="user__photo">
+    <img
+      src="{{ user.profile_pic_url }}"
+      alt="{{ user.username }}"
+      class="user__photo--image"
+    />
+  </div>
+  <div class="user__username">{{ user.username }}</div>
+  <button mat-stroked-button *ngIf="showButtons">Unfollow</button>
+</div>

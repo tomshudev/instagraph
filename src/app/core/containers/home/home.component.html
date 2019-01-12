@@ -1,0 +1,17 @@
+<div class="main">
+  <inf-login *ngIf="!(userID$ | async)"></inf-login>
+
+  <div class="logged" *ngIf="(userID$ | async)">
+    Followers:
+    <inf-users-list
+      [type]="'followers'"
+      [userID]="userID$ | async"
+    ></inf-users-list>
+
+    Followings:
+    <inf-users-list
+      [type]="'followings'"
+      [userID]="userID$ | async"
+    ></inf-users-list>
+  </div>
+</div>
