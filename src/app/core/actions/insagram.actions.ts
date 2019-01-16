@@ -1,14 +1,17 @@
-import { Action } from "@ngrx/store";
+import { Action } from '@ngrx/store';
 
 export enum InstagramActionTypes {
-  LOGIN = "[INSTAGRAM] login",
-  LOGIN_SUCCESS = "[INSTAGRAM] login success",
-  GET_ALL_FOLLOWERS = "[INSTAGRAM] get all followers",
-  GET_ALL_FOLLOWINGS = "[INSTAGRAM] get all followings",
-  FETCH_FOLLOWERS_SUCCESS = "[INSTAGRAM] fetch followers success",
-  FETCH_FOLLOWINGS_SUCCESS = "[INSTAGRAM] fetch followings success",
-  UNFOLLOW = "[INSTAGRAM] unfollow",
-  UNFOLLOW_SUCCESS = "[INSTAGRAM] unfollow success"
+  LOGIN = '[INSTAGRAM] login',
+  LOGIN_SUCCESS = '[INSTAGRAM] login success',
+  GET_ALL_FOLLOWERS = '[INSTAGRAM] get all followers',
+  GET_ALL_FOLLOWINGS = '[INSTAGRAM] get all followings',
+  FETCH_FOLLOWERS_SUCCESS = '[INSTAGRAM] fetch followers success',
+  FETCH_FOLLOWINGS_SUCCESS = '[INSTAGRAM] fetch followings success',
+  UNFOLLOW = '[INSTAGRAM] unfollow',
+  UPDATE_UNFOLLOWERS = '[INSTAGRAM] unfollow success',
+  UPDATE_UNFOLLOWERS_LIST = '[INSTAGRAM] update unfollowers list',
+  SAVE_TO_WHITE_LIST = '[INSTAGRAM] save to white list',
+  REMOVE_FROM_WHITE_LIST = '[INSTAGRAM] remove from white list'
 }
 
 export class LoginAction implements Action {
@@ -38,13 +41,31 @@ export class FetchFollowingsSuccess implements Action {
 export class Unfollow implements Action {
   readonly type = InstagramActionTypes.UNFOLLOW;
 
-  constructor(public payload: { userSession: string, ids: number[] }) {}
+  constructor(public payload: { userSession: string; ids: number[] }) {}
 }
 
-export class UnfollowSuccess implements Action {
-  readonly type = InstagramActionTypes.UNFOLLOW_SUCCESS;
+export class UpdateUnfollowers implements Action {
+  readonly type = InstagramActionTypes.UPDATE_UNFOLLOWERS;
 
-  constructor (public payload: { ids: number[] }) {}
+  constructor(public payload: { ids: any[] }) {}
+}
+
+export class UpdateUnfollowersList implements Action {
+  readonly type = InstagramActionTypes.UPDATE_UNFOLLOWERS_LIST;
+
+  constructor(public payload: { ids: any[]; remove: boolean }) {}
+}
+
+export class SaveToWhiteList implements Action {
+  readonly type = InstagramActionTypes.SAVE_TO_WHITE_LIST;
+
+  constructor(public payload: { users: any[] }) {}
+}
+
+export class RemoveFromWhiteList implements Action {
+  readonly type = InstagramActionTypes.REMOVE_FROM_WHITE_LIST;
+
+  constructor(public payload: { users: any[] }) {}
 }
 
 export type InstagramActions =
@@ -53,4 +74,7 @@ export type InstagramActions =
   | FetchFollowersSuccess
   | FetchFollowingsSuccess
   | Unfollow
-  | UnfollowSuccess;
+  | UpdateUnfollowers
+  | SaveToWhiteList
+  | RemoveFromWhiteList
+  | UpdateUnfollowersList;

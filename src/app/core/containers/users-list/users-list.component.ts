@@ -73,6 +73,8 @@ export class UsersListComponent implements OnInit {
 
   @Input() userID: string;
 
+  @Input() showButtons: boolean;
+
   selector$: Observable<any[]>;
 
   constructor(
@@ -82,8 +84,6 @@ export class UsersListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.data$.subscribe();
-
     this.selector$ =
       this.type === FollowType.FOLLOWER
         ? this.store.select(getAllFollowers)
@@ -94,30 +94,5 @@ export class UsersListComponent implements OnInit {
     itemHeight: 45,
     numAdditionalRows: 1,
     numLimitColumns: 1
-  });
-
-  data$: Observable<any[]> = Observable.create((observer: Observer<any[]>) => {
-    const fetchData = (type: string, userId: string, after: string) => {
-      return this.instagramService.getFollows(type, userId, after);
-    };
-
-    const emitNext = (cursor: string) => {
-      let obs = fetchData(this.type, this.userID, cursor).pipe(
-        map(data => {
-          return { ...data, [this.type]: JSON.parse(data[this.type]) };
-        })
-      );
-      obs.subscribe(data => {
-        this.store.dispatch(
-          this.type === 'followers'
-            ? new FetchFollowersSuccess({ newFollowers: data['followers'] })
-            : new FetchFollowingsSuccess({
-                newFollowings: data['followings']
-              })
-        );
-      });
-    };
-
-    // emitNext('empty');
   });
 }

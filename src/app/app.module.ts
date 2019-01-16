@@ -1,14 +1,15 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { AppComponent } from "./core/containers/app/app.component";
-import { CoreModule } from "./core/core.module";
-import { APOLLO_OPTIONS, ApolloModule } from "apollo-angular";
-import { HttpLink, HttpLinkModule } from "apollo-angular-link-http";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpClientModule } from "@angular/common/http";
-import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppComponent } from './core/containers/app/app.component';
+import { CoreModule } from './core/core.module';
+import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
+import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpClientModule } from '@angular/common/http';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterModule } from '@angular/router';
 import { ROUTES } from './routes';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [
@@ -29,7 +30,7 @@ import { ROUTES } from './routes';
         return {
           cache: new InMemoryCache(),
           link: httpLink.create({
-            uri: "http://localhost:4000/graphql"
+            uri: 'http://10.0.0.6:4000/graphql'
           })
         };
       },

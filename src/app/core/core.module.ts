@@ -21,6 +21,11 @@ import { FollowersComponent } from './containers/pages/followers/followers.compo
 import { FollowingsComponent } from './containers/pages/followings/followings.component';
 import { NonFollowersComponent } from './containers/pages/non-followers/non-followers.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { layoutReducer } from './reducers/layout.reducer';
+import { HeaderComponent } from './containers/header/header.component';
+import { WhiteListComponent } from './containers/pages/white-list/white-list.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [
@@ -32,19 +37,24 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSidenavModule,
     BrowserModule,
     VirtualScrollModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
-    StoreModule.forRoot({ instagram: instagramReducer }),
+    StoreModule.forRoot({ instagram: instagramReducer, layout: layoutReducer }),
     EffectsModule.forRoot([InstagramEffects])
   ],
   providers: [InstagramService],
   declarations: [
     AppComponent,
+    HeaderComponent,
     HomeComponent,
     UsersListComponent,
     UserItemComponent,
     NonFollowersComponent,
     FollowersComponent,
-    FollowingsComponent
+    FollowingsComponent,
+    WhiteListComponent
   ],
   exports: [AppComponent]
 })

@@ -1,3 +1,5 @@
+@import '../../../../styles.less';
+
 .cells-container {
   overflow-x: hidden;
   margin: 0 auto;
@@ -9,6 +11,11 @@
 }
 
 /deep/ od-virtualrow {
-  width: 100%;
-  padding: 0 33%;
+  width: 50rem;
+  padding: 0 calc((100% - 50rem) / 2);
+
+  @media only screen and (max-width: @bp-phone) {
+    width: 35rem;
+    padding: 0 calc((100% - 35rem) / 2);
+  }
 }

@@ -1,25 +1,23 @@
-import { Injectable } from "@angular/core";
-import { Actions, Effect, ofType } from "@ngrx/effects";
-import { Observable, from } from "rxjs";
-import { Action } from "@ngrx/store";
+import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+import { Observable } from 'rxjs';
+import { map, pluck, switchMap, tap } from 'rxjs/operators';
 import {
   InstagramActionTypes,
   LoginAction,
   LoginSuccessAction,
+  SaveToWhiteList,
   Unfollow,
-  UnfollowSuccess
-} from "../actions/insagram.actions";
-import {
-  catchError,
-  map,
-  mergeMap,
-  tap,
-  switchMap,
-  pluck
-} from "rxjs/operators";
-import gql from "graphql-tag";
-import { Apollo } from "apollo-angular";
-import { InstagramService } from "../services/instragram.service";
+  UpdateUnfollowers,
+  RemoveFromWhiteList,
+  UpdateUnfollowersList
+} from '../actions/insagram.actions';
+import { InstagramService } from '../services/instragram.service';
+
+const WHITE_LIST = 'whiteList';
 
 @Injectable()
 export class InstagramEffects {
@@ -48,7 +46,20 @@ export class InstagramEffects {
           `
         })
         .valueChanges.pipe(
-          pluck("data", "login", "userSession"),
+          pluck('data', 'login', 'userSession'),
+          tap((userSession: string) => {
+            if (localStorage) {
+              localStorage.removeItem('session');
+              localStorage.setItem('session', userSession);
+            }
+
+            this.instagramService
+              .fetchFollows('followings', localStorage.getItem('session'))
+              .subscribe();
+            this.instagramService
+              .fetchFollows('followers', localStorage.getItem('session'))
+              .subscribe();
+          }),
           map((userSession: string) => new LoginSuccessAction({ userSession }))
         )
     )
@@ -60,7 +71,48 @@ export class InstagramEffects {
     switchMap((action: Unfollow) =>
       this.instagramService
         .unfollow(action.payload.userSession, action.payload.ids)
-        .pipe(map((ids: number[]) => new UnfollowSuccess({ ids })))
+        .pipe(map((ids: number[]) => new UpdateUnfollowers({ ids })))
     )
+  );
+
+  @Effect()
+  saveNewWhiteList$: Observable<Action> = this.actions$.pipe(
+    ofType(InstagramActionTypes.SAVE_TO_WHITE_LIST),
+    map((action: SaveToWhiteList) => {
+      let whiteList = JSON.parse(localStorage.getItem(WHITE_LIST));
+      whiteList = whiteList ? whiteList : { whiteList: [] };
+
+      whiteList.whiteList.push(...action.payload.users);
+
+      localStorage.setItem(WHITE_LIST, JSON.stringify(whiteList));
+
+      return new UpdateUnfollowersList({
+        ids: whiteList.whiteList,
+        remove: true
+      });
+    })
+  );
+
+  @Effect()
+  removeFromWhiteList$: Observable<Action> = this.actions$.pipe(
+    ofType(InstagramActionTypes.REMOVE_FROM_WHITE_LIST),
+    map((action: RemoveFromWhiteList) => {
+      let whiteList: any = JSON.parse(localStorage.getItem(WHITE_LIST));
+
+      if (whiteList) {
+        whiteList.whiteList = [
+          ...whiteList.whiteList.filter(
+            wl => !action.payload.users.find(u => u.pk === wl.pk)
+          )
+        ];
+      }
+
+      localStorage.setItem(WHITE_LIST, JSON.stringify(whiteList));
+
+      return new UpdateUnfollowersList({
+        ids: action.payload.users,
+        remove: false
+      });
+    })
   );
 }

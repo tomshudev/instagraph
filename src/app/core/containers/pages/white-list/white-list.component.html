@@ -1,0 +1,26 @@
+<form [formGroup]="whiteList" class="white-list">
+  <mat-selection-list
+    #selections
+    formControlName="list"
+    @list
+    (selectionChange)="updateSelection($event)"
+  >
+    <mat-list-option *ngFor="let wl of _whiteList" [value]="wl" @items>
+      <inf-user-item [user]="wl"></inf-user-item>
+    </mat-list-option>
+  </mat-selection-list>
+</form>
+
+<div class="buttons">
+  <button
+    class="buttons__button"
+    mat-stroked-button
+    (click)="removeFromWhiteList(selections.selectedOptions.selected)"
+  >
+    Remove {{ selections.selectedOptions.selected.length }} from white list
+  </button>
+
+  <button mat-stroked-button (click)="selectAll()">
+    {{ selectStatus }} All
+  </button>
+</div>

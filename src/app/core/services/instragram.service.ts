@@ -1,10 +1,16 @@
-import { Injectable } from "@angular/core";
-import { Apollo } from "apollo-angular";
-import gql from "graphql-tag";
-import { ApolloQueryResult } from "apollo-client";
-import { Observable } from "rxjs";
-import { pluck, tap, map } from "rxjs/operators";
-import { User } from "../models/user.model";
+import { Injectable } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+import { ApolloQueryResult } from 'apollo-client';
+import { Observable, Observer } from 'rxjs';
+import { pluck, tap, map } from 'rxjs/operators';
+import { User } from '../models/user.model';
+import {
+  FetchFollowersSuccess,
+  FetchFollowingsSuccess
+} from '../actions/insagram.actions';
+import { Store } from '@ngrx/store';
+import { InstagramState } from '../reducers/instagram.reducer';
 
 export type FollowersResult = {
   endCursor: string;
@@ -14,13 +20,13 @@ export type FollowersResult = {
 
 @Injectable()
 export class InstagramService {
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private store: Store<InstagramState>) {}
 
   getFollows(
     type: string,
     userSession: string,
     after: string
-  ): Observable<FollowersResult> {
+  ): Observable<any> {
     if (userSession) {
       return this.apollo
         .watchQuery({
@@ -30,12 +36,16 @@ export class InstagramService {
             after: after
           },
           query: gql`
-            query GetFollows($type: String!, $userSession: String!, $after: String) {
+            query GetFollows(
+              $type: String!
+              $userSession: String!
+              $after: String
+            ) {
               getFollows(type: $type, userSession: $userSession, after: $after)
             }
           `
         })
-        .valueChanges.pipe(pluck("data", "getFollows"));
+        .valueChanges.pipe(pluck('data', 'getFollows'));
     }
   }
 
@@ -53,11 +63,38 @@ export class InstagramService {
         `
       })
       .valueChanges.pipe(
-        pluck("data", "unfollow", "ids"),
+        pluck('data', 'unfollow', 'ids'),
         map((d: string) => JSON.parse(d)),
         tap(data => {
           console.log(data);
         })
       );
+  }
+
+  fetchFollows(type: string, session: string) {
+    return Observable.create((observer: Observer<any[]>) => {
+      const fetchData = (type: string, userId: string, after: string) => {
+        return this.getFollows(type, userId, after);
+      };
+
+      const emitNext = (cursor: string) => {
+        let obs = fetchData(type, session, cursor).pipe(
+          map(data => {
+            return { ...data, [type]: JSON.parse(data[type]) };
+          })
+        );
+        obs.subscribe(data => {
+          this.store.dispatch(
+            type === 'followers'
+              ? new FetchFollowersSuccess({ newFollowers: data['followers'] })
+              : new FetchFollowingsSuccess({
+                  newFollowings: data['followings']
+                })
+          );
+        });
+      };
+
+      emitNext('empty');
+    });
   }
 }

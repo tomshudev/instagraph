@@ -1,12 +1,19 @@
-<mat-selection-list #selections class="non-followers" @list>
-  <mat-list-option
-    *ngFor="let nf of (nonFollowers$ | async)"
-    [value]="nf"
-    @items
+<form [formGroup]="nonFollowers" class="non-followers">
+  <mat-selection-list
+    #selections
+    formControlName="list"
+    @list
+    (selectionChange)="updateSelection($event)"
   >
-    <inf-user-item [user]="nf"></inf-user-item>
-  </mat-list-option>
-</mat-selection-list>
+    <mat-list-option
+      *ngFor="let nf of (nonFollowers$ | async)"
+      [value]="nf"
+      @items
+    >
+      <inf-user-item [user]="nf"></inf-user-item>
+    </mat-list-option>
+  </mat-selection-list>
+</form>
 
 <div class="buttons">
   <button
@@ -20,8 +27,12 @@
   <button
     class="buttons__button"
     mat-stroked-button
-    (click)="whiteList(selections.selectedOptions.selected)"
+    (click)="saveToWhiteList(selections.selectedOptions.selected)"
   >
     Add {{ selections.selectedOptions.selected.length }} to white list
+  </button>
+
+  <button mat-stroked-button (click)="selectAll()">
+    {{ selectStatus }} All
   </button>
 </div>

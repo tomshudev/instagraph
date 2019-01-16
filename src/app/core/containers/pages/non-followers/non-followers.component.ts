@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 import {
   trigger,
   transition,
@@ -14,8 +22,18 @@ import {
   getAllNonFollowers
 } from 'src/app/core/reducers/instagram.reducer';
 import { Store, select } from '@ngrx/store';
-import { Unfollow } from 'src/app/core/actions/insagram.actions';
+import {
+  Unfollow,
+  SaveToWhiteList
+} from 'src/app/core/actions/insagram.actions';
 import { tap } from 'rxjs/operators';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { MatSelectionList } from '@angular/material/list';
+
+export enum SelectionStatus {
+  SELECT = 'Select',
+  DESELECT = 'Deselect'
+}
 
 @Component({
   selector: 'inf-non-followers',
@@ -26,7 +44,7 @@ import { tap } from 'rxjs/operators';
     trigger('list', [
       transition(':enter', [
         // child animation selector + stagger
-        query('@items', stagger(100, animateChild()))
+        query('@items', stagger(50, animateChild()))
       ])
     ]),
     trigger('items', [
@@ -54,6 +72,12 @@ import { tap } from 'rxjs/operators';
   ]
 })
 export class NonFollowersComponent implements OnInit {
+  nonFollowers: FormGroup;
+
+  selectStatus: SelectionStatus = SelectionStatus.SELECT;
+
+  @ViewChild('selections') selections: MatSelectionList;
+
   userSession$ = this.store
     .pipe(
       select(getUserSession),
@@ -63,13 +87,22 @@ export class NonFollowersComponent implements OnInit {
     )
     .subscribe();
 
+  nonFollowers$ = this.store.pipe(
+    select(getAllNonFollowers),
+    tap(d => (this._nonFollowers = d))
+  );
+
   _userSession: string;
+  _nonFollowers: any[];
 
-  nonFollowers$ = this.store.select(getAllNonFollowers);
+  constructor(private store: Store<InstagramState>, private fb: FormBuilder) {}
 
-  constructor(private store: Store<InstagramState>) {}
-
-  ngOnInit() {}
+  ngOnInit() {
+    this.nonFollowers$.subscribe();
+    this.nonFollowers = this.fb.group({
+      list: new FormControl('')
+    });
+  }
 
   unfollow(selected: any[]) {
     this.store.dispatch(
@@ -78,5 +111,31 @@ export class NonFollowersComponent implements OnInit {
         userSession: this._userSession
       })
     );
+  }
+
+  saveToWhiteList(selected: any[]) {
+    this.store.dispatch(
+      new SaveToWhiteList({ users: selected.map(s => s.value) })
+    );
+  }
+
+  updateSelection(event) {
+    this.selectStatus =
+      this.selections.selectedOptions.selected.length ===
+      this._nonFollowers.length
+        ? SelectionStatus.DESELECT
+        : SelectionStatus.SELECT;
+  }
+
+  selectAll() {
+    this.nonFollowers.controls.list.patchValue(
+      this.selectStatus === SelectionStatus.SELECT
+        ? [...this._nonFollowers]
+        : []
+    );
+    this.selectStatus =
+      this.selectStatus === SelectionStatus.SELECT
+        ? SelectionStatus.DESELECT
+        : SelectionStatus.SELECT;
   }
 }

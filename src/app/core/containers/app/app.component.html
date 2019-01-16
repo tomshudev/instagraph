@@ -1,9 +1,18 @@
+<inf-header></inf-header>
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav class="sidenav" mode="side" [opened]="!isOpened">
+  <mat-sidenav
+    #sidenav
+    class="sidenav"
+    mode="mode"
+    autoFocus="false"
+    [opened]="isMenuOpen$ | async"
+    (closedStart)="closeMenu()"
+  >
     <a routerLink="/followers" class="nav-item">Followers</a>
     <a routerLink="/followings" class="nav-item">Followings</a>
     <a routerLink="/non-followers" class="nav-item">Non followers</a>
-    <a class="nav-item">Logout</a>
+    <a routerLink="/white-list" class="nav-item">White List</a>
+    <a routerLink="/logout" class="nav-item">Logout</a>
   </mat-sidenav>
   <mat-sidenav-content> <router-outlet></router-outlet> </mat-sidenav-content>
 </mat-sidenav-container>

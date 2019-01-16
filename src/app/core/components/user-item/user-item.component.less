@@ -1,8 +1,27 @@
+@import '../../../../styles.less';
+
 .user {
   padding: 1rem;
-
   display: flex;
   align-items: center;
+  min-width: 50rem;
+
+  @media only screen and (max-width: @bp-phone) {
+    min-width: 35rem !important;
+    padding: 0;
+  }
+
+  &__details {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+
+    &:link,
+    &:visited {
+      text-decoration: none;
+      color: #000;
+    }
+  }
 
   &__photo {
     width: 4rem;
