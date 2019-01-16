@@ -1,16 +1,16 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async, inject } from '@angular/core/testing';
-import { InstragramService } from './instragram.service';
+import { inject, TestBed } from '@angular/core/testing';
+import { InstagramService } from './instragram.service';
 
 describe('Service: Instragram', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [InstragramService]
+      providers: [InstagramService]
     });
   });
 
-  it('should ...', inject([InstragramService], (service: InstragramService) => {
+  it('should ...', inject([InstagramService], (service: InstagramService) => {
     expect(service).toBeTruthy();
   }));
 });

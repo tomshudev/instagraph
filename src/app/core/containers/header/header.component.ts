@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { LayoutState, isMenuOpen } from '../../reducers/layout.reducer';
 import { ToggleMenu } from '../../actions/layout.actions';
+import { isMenuOpen, LayoutState } from '../../reducers/layout.reducer';
 
 @Component({
   selector: 'inf-header',

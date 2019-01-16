@@ -42,7 +42,7 @@ export function instagramReducer(
       };
     }
 
-    case InstagramActionTypes.UPDATE_UNFOLLOWERS: {
+    case InstagramActionTypes.UPDATE_FOLLOWINGS: {
       let newFollowings = state.followings.filter(
         f => !action.payload.ids.find(pk => pk.pk === f.pk)
       );
@@ -56,11 +56,11 @@ export function instagramReducer(
       let newFollowings;
       if (action.payload.remove) {
         newFollowings = state.followings.filter(
-          f => !action.payload.ids.find(pk => pk.pk === f.pk)
+          f => !action.payload.users.find(wl => wl.pk === f.pk)
         );
       } else {
         newFollowings = [...state.followingForUnfollowers];
-        newFollowings.push(...action.payload.ids)
+        newFollowings.push(...action.payload.users);
       }
       return {
         ...state,
@@ -98,13 +98,11 @@ export const getAllNonFollowers = createSelector(
       whiteList = JSON.parse(localStorage.getItem('whiteList')).whiteList;
     }
 
-    let a = state.followingForUnfollowers.filter(
+    return state.followingForUnfollowers.filter(
       following =>
         !state.followers.find(f => f.username === following.username) &&
-        !whiteList.find(pk => pk.pk === following.pk)
+        !whiteList.find(wl => wl.pk === following.pk)
     );
-    console.log(a);
-    return a;
   }
 );
 

@@ -9,10 +9,10 @@ import {
   InstagramActionTypes,
   LoginAction,
   LoginSuccessAction,
+  RemoveFromWhiteList,
   SaveToWhiteList,
   Unfollow,
-  UpdateUnfollowers,
-  RemoveFromWhiteList,
+  UpdateFollowings,
   UpdateUnfollowersList
 } from '../actions/insagram.actions';
 import { InstagramService } from '../services/instragram.service';
@@ -71,7 +71,7 @@ export class InstagramEffects {
     switchMap((action: Unfollow) =>
       this.instagramService
         .unfollow(action.payload.userSession, action.payload.ids)
-        .pipe(map((ids: number[]) => new UpdateUnfollowers({ ids })))
+        .pipe(map((ids: number[]) => new UpdateFollowings({ ids })))
     )
   );
 
@@ -87,7 +87,7 @@ export class InstagramEffects {
       localStorage.setItem(WHITE_LIST, JSON.stringify(whiteList));
 
       return new UpdateUnfollowersList({
-        ids: whiteList.whiteList,
+        users: whiteList.whiteList,
         remove: true
       });
     })
@@ -110,7 +110,7 @@ export class InstagramEffects {
       localStorage.setItem(WHITE_LIST, JSON.stringify(whiteList));
 
       return new UpdateUnfollowersList({
-        ids: action.payload.users,
+        users: action.payload.users,
         remove: false
       });
     })

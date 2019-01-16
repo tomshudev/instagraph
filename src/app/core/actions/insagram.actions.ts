@@ -8,7 +8,7 @@ export enum InstagramActionTypes {
   FETCH_FOLLOWERS_SUCCESS = '[INSTAGRAM] fetch followers success',
   FETCH_FOLLOWINGS_SUCCESS = '[INSTAGRAM] fetch followings success',
   UNFOLLOW = '[INSTAGRAM] unfollow',
-  UPDATE_UNFOLLOWERS = '[INSTAGRAM] unfollow success',
+  UPDATE_FOLLOWINGS = '[INSTAGRAM] unfollow success',
   UPDATE_UNFOLLOWERS_LIST = '[INSTAGRAM] update unfollowers list',
   SAVE_TO_WHITE_LIST = '[INSTAGRAM] save to white list',
   REMOVE_FROM_WHITE_LIST = '[INSTAGRAM] remove from white list'
@@ -44,8 +44,8 @@ export class Unfollow implements Action {
   constructor(public payload: { userSession: string; ids: number[] }) {}
 }
 
-export class UpdateUnfollowers implements Action {
-  readonly type = InstagramActionTypes.UPDATE_UNFOLLOWERS;
+export class UpdateFollowings implements Action {
+  readonly type = InstagramActionTypes.UPDATE_FOLLOWINGS;
 
   constructor(public payload: { ids: any[] }) {}
 }
@@ -53,7 +53,7 @@ export class UpdateUnfollowers implements Action {
 export class UpdateUnfollowersList implements Action {
   readonly type = InstagramActionTypes.UPDATE_UNFOLLOWERS_LIST;
 
-  constructor(public payload: { ids: any[]; remove: boolean }) {}
+  constructor(public payload: { users: any[]; remove: boolean }) {}
 }
 
 export class SaveToWhiteList implements Action {
@@ -74,7 +74,7 @@ export type InstagramActions =
   | FetchFollowersSuccess
   | FetchFollowingsSuccess
   | Unfollow
-  | UpdateUnfollowers
+  | UpdateFollowings
   | SaveToWhiteList
   | RemoveFromWhiteList
   | UpdateUnfollowersList;

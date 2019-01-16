@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import {
-  InstagramState,
-  getUserSession
+  getUserSession,
+  InstagramState
 } from '../../reducers/instagram.reducer';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'inf-home',
@@ -12,14 +11,7 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./home.component.less']
 })
 export class HomeComponent implements OnInit {
-  userID$ = this.store.pipe(
-    select(getUserSession),
-    tap(userID => {
-      this._userID = userID;
-    })
-  );
-
-  _userID: string;
+  userSession$ = this.store.select(getUserSession);
 
   constructor(private store: Store<InstagramState>) {}
 

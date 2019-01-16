@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { ApolloQueryResult } from 'apollo-client';
 import { Observable, Observer } from 'rxjs';
-import { pluck, tap, map } from 'rxjs/operators';
-import { User } from '../models/user.model';
+import { map, pluck, tap } from 'rxjs/operators';
 import {
   FetchFollowersSuccess,
   FetchFollowingsSuccess
 } from '../actions/insagram.actions';
-import { Store } from '@ngrx/store';
+import { User } from '../models/user.model';
 import { InstagramState } from '../reducers/instagram.reducer';
 
 export type FollowersResult = {

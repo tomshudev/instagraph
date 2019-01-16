@@ -44,7 +44,7 @@ export class AppComponent {
       //   .fetchFollows('followers', localStorage.getItem('session'))
       //   .subscribe();
       this.instaStore.dispatch(
-        new UpdateUnfollowersList({ ids: [], remove: true })
+        new UpdateUnfollowersList({ users: [], remove: true })
       );
     }
   }
